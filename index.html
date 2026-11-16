@@ -128,7 +128,7 @@ var SIGNUP=false;$("lswap").onclick=function(e){e.preventDefault();SIGNUP=!SIGNU
  $("lp").autocomplete=SIGNUP?"new-password":"current-password"};
 $("menu").onclick=function(){$("mn").hidden=!$("mn").hidden};
 $("mn").querySelectorAll("[data-p]").forEach(function(b){b.onclick=function(){$("mn").hidden=true;document.querySelector('.tab[data-p="'+b.dataset.p+'"]').click()}});
-$("logout").onclick=function(){$("mn").hidden=true;try{localStorage.removeItem("heph-user")}catch(e){}U=null;S=null;showLogin();render()};
+$("logout").onclick=function(){$("mn").hidden=true;if(SIGNUP)$("lswap").click();try{localStorage.removeItem("heph-user")}catch(e){}U=null;S=null;showLogin();render()};
 function usd(v){return "$"+Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
 function pct(v){return (v>=0?"+":"")+Number(v).toFixed(2)+" %"}
 function esc(s){var d=document.createElement("div");d.textContent=String(s==null?"":s);return d.innerHTML}
