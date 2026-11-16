@@ -65,11 +65,12 @@ canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
   <label>Όνομα<input id="lu" autocomplete="username" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
   <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note"><a href="#" id="lswap">Δεν έχεις λογαριασμό; Εγγραφή</a></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
  <header class="head">
-  <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση</div></div>
+  <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση από το START σου</div></div>
   <div><div class="big" id="pig">🐷 +$0.00</div><div class="k" id="eq">$1,000.00</div></div>
  </header>
 
  <section class="page on" id="p-amt">
+  <p class="note">Διάλεξε πόσα εικονικά λεφτά θα παίξεις και πάτα START. Το bot πουλάει στο +10 % ή κόβει στο −10 %.</p>
   <div class="amt" id="amtl">$1,000</div>
   <input id="amt" type="range" min="100" max="25000" step="100" value="1000" aria-label="Εικονικό ποσό">
   <div class="quick" id="quick"></div>
@@ -77,9 +78,10 @@ canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
   <p class="note" id="info">Φόρτωση δεδομένων…</p>
  </section>
 
- <section class="page" id="p-scada"><div class="flow" id="flow"></div><p class="note" id="upd"></p></section>
+ <section class="page" id="p-scada"><p class="note">Ζωντανά: πώς το bot βρίσκει νόμισμα, αγοράζει και πουλάει. Τα κουτιά που φωτίζουν δουλεύουν τώρα.</p><div class="flow" id="flow"></div><p class="note" id="upd"></p></section>
 
  <section class="page" id="p-pig">
+  <p class="note">Η πορεία των εικονικών λεφτών σου από το START. Από κάτω: κάθε trade που έκλεισε (▲ κέρδος, ▼ ζημιά).</p>
   <canvas id="chart"></canvas>
   <div class="note" id="chips"></div>
   <div id="trades"></div>
