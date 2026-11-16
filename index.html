@@ -113,37 +113,54 @@ canvas{border-radius:12px;box-shadow:none}
 .menu{box-shadow:none}.lbox h2{font:600 14px var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--fg)}
 .how h2{font:700 22px var(--f-body);color:var(--fg)}
 .warn{border-color:#5a4a1e;background:#16130a;color:var(--warn)}
+
+/* layout like the reference dashboard: left menu button + uppercase brand, notice banner, section head, cards with icon headers */
+.bar{gap:12px;padding-block:14px;border-bottom:1px solid var(--line);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.mb{background:none;border:0;width:28px;height:28px;font-size:20px;color:var(--fg)}
+#who{font-size:13px}
+.notice{margin-top:14px;border:1px solid #3a3420;background:#15130b;color:#e8d9a8;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5}
+.notice b{color:#fff}
+.sechead{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px}
+.sechead h1{margin:0;font:700 24px/1.1 var(--f-body);letter-spacing:-.02em}.note2{margin:4px 0 0;color:var(--muted);font-size:13px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.ch{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;color:var(--fg)}
+.ch span{width:24px;height:24px;border:1px solid var(--line);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.ch i{margin-left:auto;font-style:normal;color:var(--muted);font-weight:400;font-size:12px}
+.card .flow{padding:0}
+.card canvas{border:1px solid var(--line)}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
 <div class="wrap">
- <nav class="bar"><b>🔥 HEPHAESTUS</b><span class="tag2">DEMO</span><span id="who"></span><button class="mb" id="menu" aria-label="Μενού">☰</button></nav>
+ <nav class="bar"><button class="mb" id="menu" aria-label="Μενού">☰</button><b>HEPHAESTUS TRADING</b><span id="who"></span></nav>
+ <div class="notice"><b>Demo λειτουργία.</b> Τα λεφτά είναι εικονικά. Το bot ακολουθεί ζωντανά το paper NOW3H-SCALP. Τα πραγματικά σου λεφτά δεν επηρεάζονται.</div>
  <div class="menu" id="mn" hidden><button data-p="amt">💰 Ποσό</button><button data-p="scada">🧭 SCADA</button><button data-p="pig">🐷 Κουμπαράς</button><button data-p="how">❓ Πώς δουλεύει</button><button id="logout">🚪 Αποσύνδεση</button></div>
  <div class="login" id="login" hidden><div class="lbox"><h2>🔥 HEPHAESTUS</h2><p class="note">Demo trading με εικονικά λεφτά</p>
   <label>Όνομα<input id="lu" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
   <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note"><a href="#" id="lswap">Δεν έχεις λογαριασμό; Εγγραφή</a></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
+ <div class="sechead"><div><h1>Το bot σου</h1><p class="note2">Εικονικός λογαριασμός, με αυτόματο trading από τον AI επιλογέα.</p></div></div>
  <header class="head">
   <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση από το START σου</div></div>
   <div><div class="big" id="pig">🐷 +$0.00</div><div class="k" id="eq">$1,000.00</div></div>
  </header>
 
- <section class="page on" id="p-amt">
+ <section class="page on" id="p-amt"><div class="card"><div class="ch"><span>$</span> Ποσό <i>εικονικό</i></div>
   <p class="note">Διάλεξε πόσα εικονικά λεφτά θα παίξεις και πάτα START. Το bot πουλάει στο +10 % ή κόβει στο −10 %.</p>
   <div class="amt" id="amtl">$1,000</div>
   <input id="amt" type="range" min="100" max="25000" step="100" value="1000" aria-label="Εικονικό ποσό">
   <div class="quick" id="quick"></div>
   <div class="ctl"><button class="go" id="start">START</button><button class="go stop" id="stop" disabled>STOP</button></div>
   <p class="note" id="info">Φόρτωση δεδομένων…</p>
- </section>
+ </div></section>
 
- <section class="page" id="p-scada"><p class="note">Ζωντανά: πώς το bot βρίσκει νόμισμα, αγοράζει και πουλάει. Τα κουτιά που φωτίζουν δουλεύουν τώρα.</p><div class="flow" id="flow"></div><p class="note" id="upd"></p></section>
+ <section class="page" id="p-scada"><div class="card"><div class="ch"><span>◎</span> SCADA <i>live</i></div><p class="note">Ζωντανά: πώς το bot βρίσκει νόμισμα, αγοράζει και πουλάει. Τα κουτιά που φωτίζουν δουλεύουν τώρα.</p><div class="flow" id="flow"></div><p class="note" id="upd"></p></div></section>
 
- <section class="page" id="p-pig">
+ <section class="page" id="p-pig"><div class="card"><div class="ch"><span>◔</span> Κουμπαράς <i>από το START</i></div>
   <p class="note">Η πορεία των εικονικών λεφτών σου από το START. Από κάτω: κάθε trade που έκλεισε (▲ κέρδος, ▼ ζημιά).</p>
   <canvas id="chart"></canvas>
   <div class="note" id="chips"></div>
   <div id="trades"></div>
- </section>
+ </div></section>
 
  <section class="page how" id="p-how">
   <h2>Πώς δουλεύει</h2>
