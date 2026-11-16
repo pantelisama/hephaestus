@@ -16,6 +16,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .menu button{background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);text-align:left;padding:14px;font:600 16px var(--f-body);cursor:pointer}
 .login{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
 .lbox{width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}.lbox label{display:flex;flex-direction:column;gap:4px;color:var(--muted)}
+.lbox a{color:var(--acc)}
 .lbox input{background:var(--panel);border:1px solid var(--line);border-radius:12px;color:var(--fg);padding:12px;font-size:17px}
 .head{position:sticky;top:calc(58px + env(safe-area-inset-top,0px));z-index:5;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-block:12px;border-bottom:1px solid var(--line);text-align:center}
 
@@ -62,7 +63,7 @@ canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
  <div class="menu" id="mn" hidden><button data-p="amt">💰 Ποσό</button><button data-p="scada">🧭 SCADA</button><button data-p="pig">🐷 Κουμπαράς</button><button data-p="how">❓ Πώς δουλεύει</button><button id="logout">🚪 Αποσύνδεση</button></div>
  <div class="login" id="login" hidden><div class="lbox"><h2>🔥 HEPHAESTUS</h2><p class="note">Demo trading με εικονικά λεφτά</p>
   <label>Όνομα<input id="lu" autocomplete="username" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
-  <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
+  <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note"><a href="#" id="lswap">Δεν έχεις λογαριασμό; Εγγραφή</a></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
  <header class="head">
   <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση</div></div>
   <div><div class="big" id="pig">🐷 +$0.00</div><div class="k" id="eq">$1,000.00</div></div>
@@ -118,9 +119,13 @@ function showLogin(){$("login").hidden=!!U;$("who").textContent=U?"👤 "+U:""}
 $("lgo").onclick=async function(){var u=$("lu").value.trim(),p=$("lp").value;
  if(u.length<2||p.length<12){$("lerr").textContent="Όνομα 2+ γράμματα και κωδικός 12+ χαρακτήρες.";return}
  var h=await hash(u+":"+p),acc={};try{acc=JSON.parse(localStorage.getItem("heph-accounts"))||{}}catch(e){}
- if(acc[u]&&acc[u]!==h){$("lerr").textContent="Λάθος κωδικός.";return}
+ if(SIGNUP){if(acc[u]){$("lerr").textContent="Το όνομα υπάρχει ήδη. Κάνε σύνδεση.";return}}
+ else{if(!acc[u]){$("lerr").textContent="Δεν υπάρχει λογαριασμός. Πάτα Εγγραφή.";return}if(acc[u]!==h){$("lerr").textContent="Λάθος κωδικός.";return}}
  acc[u]=h;try{localStorage.setItem("heph-accounts",JSON.stringify(acc));localStorage.setItem("heph-user",u)}catch(e){}
  U=u;S=load();$("lp").value="";showLogin();render()};
+var SIGNUP=false;$("lswap").onclick=function(e){e.preventDefault();SIGNUP=!SIGNUP;$("lerr").textContent="";
+ $("lgo").textContent=SIGNUP?"Εγγραφή":"Σύνδεση";$("lswap").textContent=SIGNUP?"Έχεις ήδη λογαριασμό; Σύνδεση":"Δεν έχεις λογαριασμό; Εγγραφή";
+ $("lp").autocomplete=SIGNUP?"new-password":"current-password"};
 $("menu").onclick=function(){$("mn").hidden=!$("mn").hidden};
 $("mn").querySelectorAll("[data-p]").forEach(function(b){b.onclick=function(){$("mn").hidden=true;document.querySelector('.tab[data-p="'+b.dataset.p+'"]').click()}});
 $("logout").onclick=function(){$("mn").hidden=true;try{localStorage.removeItem("heph-user")}catch(e){}U=null;S=null;showLogin();render()};
