@@ -4,6 +4,7 @@
 /* layout: phone-first app — fixed head (return + piggy), one page per bottom tab, flowchart SCADA */
 :root{--bg:#0a0e14;--panel:#121a24;--line:#24324a;--fg:#e3eaf2;--muted:#7f8ea3;--up:#2ee66b;--down:#ff5a6a;--acc:#5aa9ff;--ai:#a78bfa;--warn:#f5a524;
  --f-body:"IBM Plex Sans",system-ui,sans-serif;--f-num:"IBM Plex Mono",ui-monospace,monospace;color-scheme:dark}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font:16px/1.45 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
