@@ -1,0 +1,182 @@
+<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>HEPHAESTUS</title></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: phone-first app — fixed head (return + piggy), one page per bottom tab, flowchart SCADA */
+:root{--bg:#0a0e14;--panel:#121a24;--line:#24324a;--fg:#e3eaf2;--muted:#7f8ea3;--up:#2ee66b;--down:#ff5a6a;--acc:#5aa9ff;--ai:#a78bfa;--warn:#f5a524;
+ --f-body:"IBM Plex Sans",system-ui,sans-serif;--f-num:"IBM Plex Mono",ui-monospace,monospace;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:16px/1.45 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto;padding-block:0 110px}
+.head{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-block:12px;border-bottom:1px solid var(--line);text-align:center}
+.tag{position:absolute;left:0;top:4px;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--warn);opacity:.75}
+.big{font:700 32px/1.1 var(--f-num);font-variant-numeric:tabular-nums}.k{color:var(--muted);font-size:13px}
+.up{color:var(--up)}.down{color:var(--down)}
+.page{display:none;flex-direction:column;gap:14px;padding-block:16px}.page.on{display:flex}
+.amt{text-align:center;font:700 46px/1 var(--f-num)}
+input[type=range]{width:100%;accent-color:var(--up)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--fg);font:600 15px var(--f-body);cursor:pointer}
+.btn.sel{outline:2px solid var(--acc)}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go{min-height:68px;border:0;border-radius:18px;font:800 22px var(--f-body);letter-spacing:1px;cursor:pointer;color:#05140a;background:var(--up)}
+.go.stop{background:var(--down);color:#fff}.go:disabled{opacity:.25;cursor:not-allowed}
+.btn:focus-visible,.go:focus-visible,.tab:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.note{color:var(--muted);font-size:13px;text-align:center}
+.flow{display:flex;flex-direction:column;align-items:center;padding:14px;border-radius:16px;background:var(--panel)}
+.row{display:flex;gap:10px;width:100%}
+.nd{flex:1;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px;background:#0f1520;transition:border-color .4s,box-shadow .4s}
+.nd b{display:block;font-size:16px;margin-bottom:4px}.nd small{display:block;color:var(--muted);font-size:13px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-top:3px}.kv i{font-style:normal;color:var(--muted)}.kv span{font-family:var(--f-num);text-align:right;overflow-wrap:anywhere}
+.nd.on{border-color:var(--acc);box-shadow:0 0 16px #5aa9ff55;animation:glow 1.8s ease-in-out infinite}
+.nd.ai.on{border-color:var(--ai);box-shadow:0 0 20px #a78bfa77}
+@keyframes glow{50%{box-shadow:0 0 4px #5aa9ff22}}
+.wire{width:3px;height:30px;background:#2f4466;position:relative;overflow:hidden;border-radius:2px}
+.wire::after{content:"";position:absolute;left:-2px;width:7px;height:7px;border-radius:50%;background:var(--acc);animation:drop 1.4s linear infinite}
+.wire::before{content:"▼";position:absolute;bottom:-6px;left:-5px;font-size:10px;color:var(--acc)}
+@keyframes drop{from{top:-8px}to{top:30px}}
+canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
+.tr{display:grid;grid-template-columns:22px 1fr auto auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}
+.tr .t{font-family:var(--f-num);color:var(--muted)}
+.how ol{padding-left:20px;line-height:1.6}.warn{border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:10px;font-size:14px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#0f1620;border-top:1px solid var(--line);
+ padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{background:none;border:0;color:var(--muted);font:600 13px var(--f-body);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;cursor:pointer}
+.tab span{font-size:24px}.tab.on{color:var(--fg);background:var(--panel)}
+@media (prefers-reduced-motion:reduce){.nd.on,.wire::after{animation:none}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;600;800&display=swap">
+
+<div class="wrap">
+ <header class="head">
+  <span class="tag">DEMO</span>
+  <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση</div></div>
+  <div><div class="big" id="pig">🐷 +$0.00</div><div class="k" id="eq">$1,000.00</div></div>
+ </header>
+
+ <section class="page on" id="p-amt">
+  <div class="amt" id="amtl">$1,000</div>
+  <input id="amt" type="range" min="100" max="25000" step="100" value="1000" aria-label="Εικονικό ποσό">
+  <div class="quick" id="quick"></div>
+  <div class="ctl"><button class="go" id="start">START</button><button class="go stop" id="stop" disabled>STOP</button></div>
+  <p class="note" id="info">Φόρτωση δεδομένων…</p>
+ </section>
+
+ <section class="page" id="p-scada"><div class="flow" id="flow"></div><p class="note" id="upd"></p></section>
+
+ <section class="page" id="p-pig">
+  <canvas id="chart"></canvas>
+  <div class="note" id="chips"></div>
+  <div id="trades"></div>
+ </section>
+
+ <section class="page how" id="p-how">
+  <h2>Πώς δουλεύει</h2>
+  <ol>
+   <li><b>Σάρωση.</b> Κάθε λεπτό ελέγχονται νέα memecoins στο Solana. Τα επικίνδυνα πετιούνται.</li>
+   <li><b>Bots.</b> Πάνω από 100 bots κάνουν trades με εικονικά λεφτά, όλη τη μέρα.</li>
+   <li><b>AI επιλογέας.</b> Ακολουθεί τα bots που κερδίζουν τώρα. Από 13 εκδοχές του κρατάμε την καλύτερη.</li>
+   <li><b>Αντιγραφή.</b> Πατάς START: τα εικονικά σου λεφτά ακολουθούν την καλύτερη εκδοχή από εκείνη τη στιγμή.</li>
+   <li><b>Κουμπαράς.</b> Πάνω βλέπεις κέρδος ή ζημιά. STOP όποτε θες.</li>
+  </ol>
+  <p class="warn">Μόνο εικονικά λεφτά. Δεν έχει αποδειχτεί ότι κερδίζει. Τα παλιά αποτελέσματα δεν εγγυώνται τα μελλοντικά.</p>
+ </section>
+</div>
+
+<nav class="tabs"><div>
+ <button class="tab on" data-p="amt"><span>💰</span>Ποσό</button>
+ <button class="tab" data-p="scada"><span>🧭</span>SCADA</button>
+ <button class="tab" data-p="pig"><span>🐷</span>Κουμπαράς</button>
+ <button class="tab" data-p="how"><span>❓</span>Πώς</button>
+</div></nav>
+
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i)};
+var F=null, S=load();
+function load(){try{return JSON.parse(localStorage.getItem("heph-session"))||null}catch(e){return null}}
+function save(){try{localStorage.setItem("heph-session",JSON.stringify(S))}catch(e){}}
+function usd(v){return "$"+Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct(v){return (v>=0?"+":"")+Number(v).toFixed(2)+" %"}
+function esc(s){var d=document.createElement("div");d.textContent=String(s==null?"":s);return d.innerHTML}
+function score(r){return r.n>=3?r.pct*r.n/(r.n+20):-1e9}
+function best(){if(!F||!F.meta)return null;return F.meta.filter(function(r){return r.name==="META-NOW3H"})[0]||null}   // owner 11-16: only NOW3H
+function row(name){return F&&F.meta?F.meta.filter(function(r){return r.name===name})[0]:null}
+
+[1000,5000,10000,25000].forEach(function(v){var b=document.createElement("button");b.className="btn";b.textContent="$"+(v/1000)+"k";
+ b.onclick=function(){$("amt").value=v;amt()};$("quick").appendChild(b)});
+function amt(){$("amtl").textContent="$"+Number($("amt").value).toLocaleString("en-US");render()}
+$("amt").oninput=amt;
+
+document.querySelectorAll(".tab").forEach(function(t){t.onclick=function(){
+ document.querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===t)});
+ document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("on",p.id==="p-"+t.dataset.p)});
+ window.scrollTo(0,0);render()}});
+
+$("start").onclick=function(){var b=best();if(!b)return;
+ S={amount:Number($("amt").value),row:b.name,pct0:b.pct,ts0:Date.now()/1000,running:true,curve:[[Date.now()/1000,Number($("amt").value)]]};save();render()};
+$("stop").onclick=function(){if(S){S.running=false;S.stopTs=Date.now()/1000;S.pctEnd=cur().pctNow;save();render()}};
+
+function cur(){if(!S)return null;var r=row(S.row);var pNow=S.running?(r?r.pct:S.pct0):(S.pctEnd!=null?S.pctEnd:S.pct0);
+ var ret=((1+pNow/100)/(1+S.pct0/100)-1)*100;return{ret:ret,eq:S.amount*(1+ret/100),pig:S.amount*ret/100,r:r,pctNow:pNow}}
+
+function render(){
+ var c=cur(),run=!!(S&&S.running);
+ var r=c?c.ret:0,pig=c?c.pig:0;
+ $("ret").textContent=pct(r);$("ret").className="big "+(r>0?"up":r<0?"down":"");
+ $("pig").textContent="🐷 "+(pig>=0?"+":"-")+usd(Math.abs(pig));$("pig").className="big "+(pig>0?"up":pig<0?"down":"");
+ $("eq").textContent=usd(c?c.eq:Number($("amt").value));
+ $("start").disabled=run||!best();$("stop").disabled=!run;$("amt").disabled=run;
+ $("start").textContent=S&&!run?"ΝΕΟ START":"START";
+ var b=best();
+ $("info").textContent=!F?"Φόρτωση δεδομένων…":run?("Ακολουθεί: "+S.row.replace("META-","")+" (κλειδωμένο)"):b?("Αν πατήσεις START θα ακολουθήσει: "+b.name.replace("META-","")+" ("+pct(b.pct)+", "+b.n+" trades)"):"Δεν υπάρχουν δεδομένα ακόμα.";
+ if(c&&run){var last=S.curve[S.curve.length-1];if(Date.now()/1000-last[0]>60||Math.abs(last[1]-c.eq)>0.005){S.curve.push([Date.now()/1000,c.eq]);if(S.curve.length>500)S.curve.shift();save()}}
+ if($("p-scada").classList.contains("on"))scada();
+ if($("p-pig").classList.contains("on"))pigpage();
+}
+
+function nd(t,body,on,cls){return '<div class="nd '+(cls||"")+(on?" on":"")+'"><b>'+t+"</b>"+body+"</div>"}
+function kv(k,v){return '<div class="kv"><i>'+k+'</i><span>'+v+"</span></div>"}
+function wire(){return '<div class="wire"></div>'}
+function sh(x){return String(x||"-").split("-").slice(0,2).join("-")}
+function scada(){
+ if(!F){$("flow").innerHTML='<p class="note">Φόρτωση…</p>';return}
+ var on=!!(S&&S.running),r=S?row(S.row):best(),last=(F.last||[]).filter(function(t){return !S||t.variant===S.row}),
+  op=last.filter(function(t){return t.why==="meta-open"}).slice(-1)[0],cl=last.filter(function(t){return t.why!=="meta-open"}).slice(-1)[0],c=cur();
+ $("flow").innerHTML=
+  nd("🔎 Σαρωτής νομισμάτων","<small>Βρίσκει νέα memecoins στο Solana</small>"+kv("Παρακολουθεί:",(F.tracked||0)+" νομίσματα"),true)+wire()+
+  nd("🛡 Φίλτρο ασφαλείας","<small>Κόβει νομίσματα χωρίς ρευστότητα ή με λίγους κατόχους</small>",true)+wire()+
+  '<div class="row">'+nd("🪙 Επιλογέας νομισμάτων","<small>Το AI κόβει ό,τι μοιάζει με απάτη</small>",true)+
+   nd("🤖 Επιλογέας bot (Top 20)",(F.pool||[]).slice(0,3).map(function(p,i){return kv("Bot "+(i+1)+":",esc(sh(p.name))+' <b class="'+(p.ret>=0?"up":"down")+'">'+pct(p.ret)+"</b>")}).join(""),true)+"</div>"+wire()+
+  nd("🧠 AI επιλογέας","<small>Ταξινομεί τα bots κάθε 5 λεπτά</small>"+kv("Πρώτο bot:",esc(sh(F.ai_top))),true,"ai")+wire()+
+  nd("🏆 Καλύτερο variant",r?kv("Όνομα:",esc(r.name.replace("META-","")))+kv("Συνολικά (όχι δικά σου):",'<b class="'+(r.pct>=0?"up":"down")+'">'+pct(r.pct)+"</b>")+kv("Trades:",r.n)+(c?kv("Από το δικό σου START:",'<b class="'+(c.ret>=0?"up":"down")+'">'+pct(c.ret)+"</b>"):""):"-",!!r)+wire()+
+  nd("⚡ Απόφαση",op?kv("Αγορά νομίσματος:",esc(op.symbol))+kv("Με το bot:",esc(sh(op.chosen))):"<small>Περιμένει σήμα</small>",on&&!!op)+wire()+
+  nd("🏁 Πώληση (κλείσιμο trade)",cl?kv("Πούλησε:",esc(cl.symbol))+kv("Αποτέλεσμα:",'<b class="'+((cl.ret_pct||0)>=0?"up":"down")+'">'+pct(cl.ret_pct||0)+"</b>"):"<small>Καμία πώληση ακόμα</small>",on&&!!cl)+wire()+
+  nd("🐷 Κουμπαράς",kv("Εσύ:",'<b class="'+((c?c.pig:0)>=0?"up":"down")+'">'+(c?((c.pig>=0?"+":"-")+usd(Math.abs(c.pig))):"$0.00")+"</b>"),on);
+ $("upd").textContent=F.ts?("Δεδομένα: "+new Date(F.ts*1000).toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit"})):"";
+}
+
+function pigpage(){
+ var cv=$("chart"),dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*dpr;cv.height=h*dpr;
+ var g=cv.getContext("2d");g.scale(dpr,dpr);g.clearRect(0,0,w,h);
+ var pts=S?S.curve:[];if(pts.length>1){var ys=pts.map(function(p){return p[1]}),xs=pts.map(function(p){return p[0]});
+  var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);if(y1===y0){y1+=1;y0-=1}
+  var X=function(x){return (x-x0)/Math.max(1,x1-x0)*w},Y=function(y){return 8+(1-(y-y0)/(y1-y0))*(h-16)};
+  var up=pts[pts.length-1][1]>=pts[0][1];g.beginPath();pts.forEach(function(p,i){i?g.lineTo(X(p[0]),Y(p[1])):g.moveTo(X(p[0]),Y(p[1]))});
+  g.strokeStyle=up?"#2ee66b":"#ff5a6a";g.lineWidth=2.4;g.stroke()}
+ else{g.fillStyle="#7f8ea3";g.font="14px sans-serif";g.fillText("Πάτα START για να ξεκινήσει το γράφημα",12,26)}
+ var tr=(F&&F.last||[]).filter(function(t){return S&&t.variant===S.row&&t.ts>=S.ts0&&t.why!=="meta-open"});
+ $("chips").textContent=S?(tr.length+" κλειστά trades · "+tr.filter(function(t){return (t.ret_pct||0)>0}).length+" νίκες · "+S.row.replace("META-","")):"";
+ $("trades").innerHTML=tr.slice(-15).reverse().map(function(t){var p=t.ret_pct||0;
+  return '<div class="tr"><span class="'+(p>=0?"up":"down")+'">'+(p>=0?"▲":"▼")+"</span><span>"+esc(t.symbol)+'</span><span class="t">'+new Date(t.ts*1000).toLocaleTimeString("el-GR",{hour:"2-digit",minute:"2-digit"})+'</span><b class="'+(p>=0?"up":"down")+'">'+pct(p)+"</b></div>"}).join("");
+}
+
+amt();
+setInterval(render,5000);
+(function poll(){fetch("fleet.json?ts="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){F=d;render()})
+ .catch(function(){if(!F)$("info").textContent="Δεν φορτώθηκαν τα δεδομένα."});setTimeout(poll,60000)})();
+})();
+</script>
+</body></html>
