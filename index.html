@@ -55,14 +55,45 @@ canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
 .tab{background:none;border:0;color:var(--muted);font:600 13px var(--f-body);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;cursor:pointer}
 .tab span{font-size:24px}.tab.on{color:var(--fg);background:var(--panel)}
 @media (prefers-reduced-motion:reduce){.nd.on,.wire::after{animation:none}}
+
+/* owner 11-16: SAME template as the Mallorca app (salt/paper/ink/sea palette, Figtree + Gloock, pills, soft cards), smaller sizes */
+:root{--bg:#EAF1F1;--panel:#FFFFFF;--line:#CFDCDC;--fg:#12303B;--muted:#557079;--acc:#0E5A70;--ai:#2F5D4A;--warn:#B7802A;--up:#2F7D4F;--down:#B4322E;
+ --gold:#C0913F;--depth:0 1px 2px rgba(18,48,59,.06),0 10px 24px -10px rgba(18,48,59,.28);--f-body:"Figtree",system-ui,sans-serif;--f-num:"Figtree",system-ui,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1F26;--panel:#132C35;--line:#24444F;--fg:#E6EFEF;--muted:#93AEB5;--acc:#5FB8CC;--ai:#7FC0A2;--warn:#E6B35C;--up:#7FC0A2;--down:#F08A80;--gold:#E0B566;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C1F26;--panel:#132C35;--line:#24444F;--fg:#E6EFEF;--muted:#93AEB5;--acc:#5FB8CC;--ai:#7FC0A2;--warn:#E6B35C;--up:#7FC0A2;--down:#F08A80;--gold:#E0B566;color-scheme:dark}
+body{font-size:15px}
+.bar b{font:400 22px/1 "Gloock",Georgia,serif;color:var(--acc);letter-spacing:.5px}
+.tag2{color:var(--gold);border-color:var(--gold)}
+.head{border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--depth);padding:10px;margin-top:6px}
+.big{font:800 24px/1.1 var(--f-num)}.k{font-size:12px}
+.amt{font:400 34px/1 "Gloock",Georgia,serif;color:var(--acc)}
+.btn{border-radius:999px;min-height:40px;font-size:14px;background:var(--panel)}
+.btn.sel{outline:none;background:var(--acc);color:var(--bg)}
+.go{min-height:52px;border-radius:999px;font-size:18px;color:#fff;background:var(--ai);box-shadow:var(--depth)}
+.go.stop{background:var(--down)}
+.flow{background:transparent;padding:4px}
+.nd{background:var(--panel);border-radius:16px;box-shadow:var(--depth);padding:10px 12px}
+.nd b{font-size:14px;color:var(--acc)}.nd small,.kv{font-size:13px}
+.nd.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),var(--depth)}
+.nd.ai.on{border-color:var(--ai);box-shadow:0 0 0 2px var(--ai),var(--depth)}
+.wire{background:var(--line);height:22px}.wire::after{background:var(--gold)}.wire::before{color:var(--gold)}
+canvas{background:var(--panel);border:1px solid var(--line);box-shadow:var(--depth);height:160px}
+.tr{font-size:14px}
+.tabs{background:var(--panel);box-shadow:0 -6px 18px -12px rgba(18,48,59,.35)}
+.tab{font-size:12px}.tab span{font-size:20px}.tab.on{background:var(--acc);color:var(--bg);border-radius:999px}
+.menu{box-shadow:var(--depth)}.menu button{font-size:15px}
+.login{background:var(--bg)}.lbox h2{font:400 34px "Gloock",Georgia,serif;color:var(--acc);margin:0}
+.lbox input{background:var(--panel);border-radius:12px;font-size:16px}
+.how h2{font:400 28px "Gloock",Georgia,serif;color:var(--acc)}
+.warn{border-color:var(--gold);color:var(--fg);background:var(--panel)}
 </style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Gloock&display=swap">
 
 <div class="wrap">
  <nav class="bar"><b>🔥 HEPHAESTUS</b><span class="tag2">DEMO</span><span id="who"></span><button class="mb" id="menu" aria-label="Μενού">☰</button></nav>
  <div class="menu" id="mn" hidden><button data-p="amt">💰 Ποσό</button><button data-p="scada">🧭 SCADA</button><button data-p="pig">🐷 Κουμπαράς</button><button data-p="how">❓ Πώς δουλεύει</button><button id="logout">🚪 Αποσύνδεση</button></div>
  <div class="login" id="login" hidden><div class="lbox"><h2>🔥 HEPHAESTUS</h2><p class="note">Demo trading με εικονικά λεφτά</p>
-  <label>Όνομα<input id="lu" autocomplete="username" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
+  <label>Όνομα<input id="lu" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
   <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note"><a href="#" id="lswap">Δεν έχεις λογαριασμό; Εγγραφή</a></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
  <header class="head">
   <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση από το START σου</div></div>
@@ -118,9 +149,12 @@ function load(){try{return JSON.parse(localStorage.getItem(key()))||null}catch(e
 function save(){try{localStorage.setItem(key(),JSON.stringify(S))}catch(e){}}
 async function hash(t){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
 function showLogin(){$("login").hidden=!!U;$("who").textContent=U?"👤 "+U:""}
-$("lgo").onclick=async function(){var u=$("lu").value.trim(),p=$("lp").value;
+$("lgo").onclick=async function(){var u=$("lu").value.trim().toLowerCase(),p=$("lp").value;   // phones capitalise the 1st letter -> same account either way
  if(u.length<2||p.length<12){$("lerr").textContent="Όνομα 2+ γράμματα και κωδικός 12+ χαρακτήρες.";return}
  var h=await hash(u+":"+p),acc={};try{acc=JSON.parse(localStorage.getItem("heph-accounts"))||{}}catch(e){}
+ Object.keys(acc).forEach(function(k){if(k!==k.toLowerCase()&&k.toLowerCase()===u&&!acc[u]){acc["__old"]=k}});   // accounts made before the lowercase fix
+ if(acc.__old&&!SIGNUP){var oh=await hash(acc.__old+":"+p);if(oh===acc[acc.__old]){delete acc[acc.__old];acc[u]=h}}
+ delete acc.__old;
  if(SIGNUP){if(acc[u]){$("lerr").textContent="Το όνομα υπάρχει ήδη. Κάνε σύνδεση.";return}}
  else{if(!acc[u]){$("lerr").textContent="Δεν υπάρχει λογαριασμός. Πάτα Εγγραφή.";return}if(acc[u]!==h){$("lerr").textContent="Λάθος κωδικός.";return}}
  acc[u]=h;try{localStorage.setItem("heph-accounts",JSON.stringify(acc));localStorage.setItem("heph-user",u)}catch(e){}
