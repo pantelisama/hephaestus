@@ -61,7 +61,7 @@ canvas{width:100%;height:180px;border-radius:14px;background:var(--panel)}
  <nav class="bar"><b>🔥 HEPHAESTUS</b><span class="tag2">DEMO</span><span id="who"></span><button class="mb" id="menu" aria-label="Μενού">☰</button></nav>
  <div class="menu" id="mn" hidden><button data-p="amt">💰 Ποσό</button><button data-p="scada">🧭 SCADA</button><button data-p="pig">🐷 Κουμπαράς</button><button data-p="how">❓ Πώς δουλεύει</button><button id="logout">🚪 Αποσύνδεση</button></div>
  <div class="login" id="login" hidden><div class="lbox"><h2>🔥 HEPHAESTUS</h2><p class="note">Demo trading με εικονικά λεφτά</p>
-  <label>Όνομα<input id="lu" autocomplete="username" maxlength="24"></label><label>Κωδικός (8+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
+  <label>Όνομα<input id="lu" autocomplete="username" maxlength="24"></label><label>Κωδικός (12+ χαρακτήρες)<input id="lp" type="password" autocomplete="current-password" maxlength="64"></label>
   <button class="go" id="lgo">Σύνδεση</button><p class="note" id="lerr"></p><p class="note">Ο λογαριασμός μένει σε αυτή τη συσκευή.</p></div></div>
  <header class="head">
   <div><div class="big" id="ret">+0.00 %</div><div class="k">απόδοση</div></div>
@@ -116,7 +116,7 @@ function save(){try{localStorage.setItem(key(),JSON.stringify(S))}catch(e){}}
 async function hash(t){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
 function showLogin(){$("login").hidden=!!U;$("who").textContent=U?"👤 "+U:""}
 $("lgo").onclick=async function(){var u=$("lu").value.trim(),p=$("lp").value;
- if(u.length<2||p.length<8){$("lerr").textContent="Όνομα 2+ γράμματα και κωδικός 8+ χαρακτήρες.";return}
+ if(u.length<2||p.length<12){$("lerr").textContent="Όνομα 2+ γράμματα και κωδικός 12+ χαρακτήρες.";return}
  var h=await hash(u+":"+p),acc={};try{acc=JSON.parse(localStorage.getItem("heph-accounts"))||{}}catch(e){}
  if(acc[u]&&acc[u]!==h){$("lerr").textContent="Λάθος κωδικός.";return}
  acc[u]=h;try{localStorage.setItem("heph-accounts",JSON.stringify(acc));localStorage.setItem("heph-user",u)}catch(e){}
