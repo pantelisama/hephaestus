@@ -128,7 +128,7 @@ function usd(v){return "$"+Number(v).toLocaleString("en-US",{minimumFractionDigi
 function pct(v){return (v>=0?"+":"")+Number(v).toFixed(2)+" %"}
 function esc(s){var d=document.createElement("div");d.textContent=String(s==null?"":s);return d.innerHTML}
 function score(r){return r.n>=3?r.pct*r.n/(r.n+20):-1e9}
-function best(){if(!F||!F.meta)return null;return F.meta.filter(function(r){return r.name==="META-NOW3H"})[0]||null}   // owner 11-16: only NOW3H
+function best(){if(!F||!F.meta)return null;return F.meta.filter(function(r){return r.name==="META-NOW3H-SCALP"})[0]||null}   // owner 11-16: only NOW3H
 function row(name){return F&&F.meta?F.meta.filter(function(r){return r.name===name})[0]:null}
 
 [1000,5000,10000,25000].forEach(function(v){var b=document.createElement("button");b.className="btn";b.textContent="$"+(v/1000)+"k";
