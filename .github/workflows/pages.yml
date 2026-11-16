@@ -2,6 +2,7 @@ name: Deploy HEPHAESTUS to GitHub Pages
 on:
   push:
     branches: ["main"]
+    paths-ignore: ["fleet.json"]   # data refresh every minute reads via the GitHub API, no Pages build
   workflow_dispatch:
 permissions:
   contents: read

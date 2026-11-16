@@ -175,7 +175,7 @@ function pigpage(){
 
 amt();
 setInterval(render,5000);
-(function poll(){fetch("fleet.json?ts="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){F=d;render()})
+(function poll(){fetch("https://api.github.com/repos/pantelisama/hephaestus/contents/fleet.json?ref=main",{cache:"no-store",headers:{Accept:"application/vnd.github.raw+json"}}).then(function(r){if(!r.ok)throw 0;return r.json()}).catch(function(){return fetch("fleet.json?ts="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()})}).then(function(d){F=d;render()})
  .catch(function(){if(!F)$("info").textContent="Δεν φορτώθηκαν τα δεδομένα."});setTimeout(poll,60000)})();
 })();
 </script>
